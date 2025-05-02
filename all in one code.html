@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> Detection System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffe6f0;
+      margin: 0;
+      padding: 0;
+      color: #000;
+    }
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      background-color: #fff0f5;
+      border-radius: 10px;
+    }
+    .hidden { display: none; }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .green { background: #d4edda; }
+    .yellow { background: #fff3cd; }
+    .orange { background: #ffe5b4; }
+    .red { background: #f8d7da; }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+    }
+    .symptom-list {
+      max-height: 200px;
+      overflow-y: scroll;
+      background-color: #e6f2ff;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .symptom-item {
+      background-color: #f9f9f9;
+      margin: 5px;
+      padding: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .symptom-item.selected {
+      background-color: #c3e6cb;
+    }
+    .doctor-list {
+      background-color: #f0f8ff;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    #healthPage {
+      background-color: #f0fff0;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    #quoteSection {
+      background-color: #28a745;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 5px;
+      font-size: 18px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="authSection" class="container">
+  <h2>Login or Signup</h2>
+  <input type="text" id="username" placeholder="Enter Username">
+  <div style="display: flex; gap: 10px;">
+    <input type="password" id="password" placeholder="Enter Password">
+    <button onclick="togglePassword()">Show Password</button>
+  </div>
+  <button onclick="signup()">Signup</button>
+  <button onclick="login()">Login</button>
+  <p id="authMsg"></p>
+</div>
+
+<div id="detectionSection" class="hidden container">
+  <h2>Disease Detection System</h2>
+  <h3>Select Symptoms:</h3>
+  <div id="symptomList" class="symptom-list"></div>
+  <button id="detectBtn" onclick="detectDisease()">Check Disease</button>
+  <div id="result"></div>
+
+  <button onclick="toggleDoctorList()">Recommend Doctor</button>
+  <div id="doctorSection" class="hidden doctor-list"></div>
+
+  <div id="feedbackSection" class="hidden">
+    <h3>Feedback Form</h3>
+    <textarea id="feedbackInput" placeholder="Your feedback..."></textarea>
+    <button onclick="submitFeedback()">Submit</button>
+    <p id="feedbackMsg"></p>
+  </div>
+
+  <button onclick="toggleHealthPage()">Next Page: Healthy Habits & Diet</button>
+  <div id="healthPage" class="hidden">
+    <h3>Daily Healthy Habits</h3>
+    <ul>
+      <li>Wake up early and get 7–8 hours of sleep</li>
+      <li>Exercise 30 minutes daily</li>
+      <li>Drink at least 2–3 liters of water</li>
+      <li>Practice meditation or mindfulness</li>
+      <li>Limit screen time and reduce stress</li>
+    </ul>
+    <h3>Nutritious Foods</h3>
+    <table>
+      <tr>
+        <th>Food Name</th>
+        <th>Nutrient</th>
+        <th>Benefits for Disease</th>
+      </tr>
+      <tr>
+        <td>Spinach</td>
+        <td>Iron, Vitamin A, Vitamin K</td>
+        <td>Boosts immune system, helps in blood formation, good for anemia and fatigue</td>
+      </tr>
+      <tr>
+        <td>Almonds</td>
+        <td>Healthy fats, Protein, Vitamin E</td>
+        <td>Improves brain health, good for heart disease, regulates blood sugar</td>
+      </tr>
+      <tr>
+        <td>Yogurt</td>
+        <td>Probiotics, Calcium, Vitamin B12</td>
+        <td>Boosts digestive health, prevents constipation, strengthens bones</td>
+      </tr>
+      <tr>
+        <td>Oats</td>
+        <td>Fiber, Protein, Magnesium</td>
+        <td>Good for weight loss, stabilizes blood sugar, heart health</td>
+      </tr>
+      <tr>
+        <td>Fruits (Apples, Bananas, Berries)</td>
+        <td>Antioxidants, Natural Sugars, Vitamin C</td>
+        <td>Boosts immune system, improves digestion, helps in weight management</td>
+      </tr>
+      <tr>
+        <td>Broccoli</td>
+        <td>Vitamin C, Folate, Fiber</td>
+        <td>Reduces inflammation, supports heart health, helps in detoxification</td>
+      </tr>
+      <tr>
+        <td>Carrots</td>
+        <td>Vitamin A, Fiber, Potassium</td>
+        <td>Good for vision, heart health, prevents cancer</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div id="quoteSection"></div>
+
+<script>
+  const diseases = [
+    { name: "Common Cold", type: "Viral", symptoms: ["fever", "cough", "runny nose", "sore throat"], medicine: "Paracetamol, Ibuprofen", measures: "Rest, Steam, Hydration" },
+    { name: "Flu", type: "Viral", symptoms: ["fever", "chills", "headache", "cough"], medicine: "Oseltamivir, Paracetamol", measures: "Fluids, Rest, Avoid contact with others" },
+    { name: "COVID-19", type: "Viral", symptoms: ["fever", "dry cough", "tiredness", "loss of taste", "breathlessness"], medicine: "Paracetamol, Remdesivir", measures: "Isolation, Monitor oxygen, Seek medical help if needed" },
+    { name: "Malaria", type: "Parasitic", symptoms: ["fever", "sweating", "headache", "nausea", "chills"], medicine: "Chloroquine, Artemisinin-based combination therapy", measures: "Mosquito net, Anti-malarial drugs" },
+    { name: "Typhoid", type: "Bacterial", symptoms: ["fever", "abdominal pain", "constipation", "rash"], medicine: "Ciprofloxacin, Azithromycin", measures: "Clean water, Proper sanitation, Antibiotics" },
+    { name: "Tuberculosis", type: "Bacterial", symptoms: ["chronic cough", "weight loss", "night sweats", "fever"], medicine: "Rifampicin, Isoniazid, Pyrazinamide", measures: "Take prescribed medication, Rest, Good nutrition" }
+  ];
+
+  const doctors = [
+    { name: "Dr. Aarti Sharma", specialist: "General Physician", contact: "8881234567", hospital: "City Care", address: "Delhi", time: "9am-1pm" },
+    { name: "Dr. Rajeev Mehta", specialist: "Pulmonologist", contact: "9992345678", hospital: "Health Hub", address: "Noida", time: "10am-2pm" },
+    { name: "Dr. Sneha Rao", specialist: "Infectious Disease", contact: "9873456789", hospital: "Global Health", address: "Bangalore", time: "11am-3pm" },
+    { name: "Dr. Farhan Khan", specialist: "Internal Medicine", contact: "9823456123", hospital: "Apollo", address: "Kolkata", time: "8am-12pm" },
+    { name: "Dr. Meenakshi Jain", specialist: "Family Medicine", contact: "9812341234", hospital: "MediPlus", address: "Chennai", time: "12pm-4pm" }
+  ];
+
+  const symptomItems = ["fever", "cough", "headache", "sore throat", "runny nose", "sneezing", "chills", "body ache", "tiredness", "breathlessness", "nausea", "rash", "abdominal pain"];
+  const healthyQuotes = [
+    "Your health is an investment, not an expense.",
+    "Take care of your body. It's the only place you have to live.",
+    "The greatest wealth is health.",
+    "Health is not valued until sickness comes.",
+    "The first wealth is health.",
+    "A healthy outside starts from the inside.",
+    "A good laugh and a long sleep are the best cures in the doctor’s book.",
+    "The best project you’ll ever work on is you.",
+    "Your body deserves the best.",
+    "Eat to live, don’t live to eat."
+  ];
+
+  let isSignedUp = false;
+
+  function login() {
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+    if (!isSignedUp) {
+      alert("You need to sign up first.");
+      return;
+    }
+    if (user && pass) {
+      document.getElementById("authSection").classList.add("hidden");
+      document.getElementById("detectionSection").classList.remove("hidden");
+      populateSymptoms();
+    } else {
+      document.getElementById("authMsg").innerText = "Enter valid credentials.";
+    }
+  }
+
+  function signup() {
+    isSignedUp = true;
+    alert("You have successfully signed up. Now you can login.");
+    document.getElementById("authMsg").innerText = "Signup successful! Please login.";
+  }
+
+  function togglePassword() {
+    const pass = document.getElementById("password");
+    pass.type = pass.type === "password" ? "text" : "password";
+  }
+
+  function populateSymptoms() {
+    const list = document.getElementById("symptomList");
+    list.innerHTML = "";
+    symptomItems.forEach(symptom => {
+      const div = document.createElement("div");
+      div.className = "symptom-item";
+      div.textContent = symptom;
+      div.onclick = () => div.classList.toggle("selected");
+      list.appendChild(div);
+    });
+  }
+
+  function detectDisease() {
+    const selected = Array.from(document.querySelectorAll(".symptom-item.selected")).map(e => e.textContent);
+    const result = document.getElementById("result");
+    result.innerHTML = "";
+
+    if (!selected.length) return alert("Please select at least one symptom.");
+
+    diseases.forEach(disease => {
+      const matched = disease.symptoms.filter(s => selected.includes(s)).length;
+      const percent = Math.round((matched / disease.symptoms.length) * 100);
+      if (percent > 0) {
+        const div = document.createElement("div");
+        div.className = "card";
+        if (percent <= 25) div.classList.add("green");
+        else if (percent <= 50) div.classList.add("yellow");
+        else if (percent <= 75) div.classList.add("orange");
+        else div.classList.add("red");
+
+        div.innerHTML = `<strong>${disease.name}</strong><br>Type: ${disease.type}<br>
+                         Match: ${percent}%<br><strong>Medicine:</strong> ${disease.medicine}<br>
+                         <strong>Measures:</strong> ${disease.measures}`;
+        result.appendChild(div);
+      }
+    });
+
+    document.getElementById("feedbackSection").classList.remove("hidden");
+  }
+
+  function toggleDoctorList() {
+    const section = document.getElementById("doctorSection");
+    section.innerHTML = doctors.map((d, i) => `<p><strong>${i + 1}. ${d.name}</strong> (${d.specialist})<br>Contact: ${d.contact}<br>Hospital: ${d.hospital}<br>Address: ${d.address}<br>Time: ${d.time}</p>`).join("");
+    section.classList.toggle("hidden");
+  }
+
+  function submitFeedback() {
+    document.getElementById("feedbackMsg").innerText = "Thanks for sharing feedback.";
+  }
+
+  function toggleHealthPage() {
+    document.getElementById("healthPage").classList.toggle("hidden");
+  }
+
+  function showQuotes() {
+    let i = 0;
+    setInterval(() => {
+      document.getElementById("quoteSection").textContent = healthyQuotes[i];
+      document.getElementById("quoteSection").style.display = 'block';
+      i = (i + 1) % healthyQuotes.length;
+      setTimeout(() => document.getElementById("quoteSection").style.display = 'none', 4000);
+    }, 5000);
+  }
+
+  window.onload = showQuotes;
+</script>
+
+</body>
+</html>
